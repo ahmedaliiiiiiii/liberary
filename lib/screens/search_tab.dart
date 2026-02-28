@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-
 import '../models/book.dart';
 import '../widgets/book_details_sheet.dart';
 import '../widgets/mobile_book_card.dart';
@@ -33,10 +32,10 @@ class _SearchTabState extends State<SearchTab> {
 
   List<Book> get _filteredBooks {
     return widget.books.where((book) {
-      final matchesSearch =
+      final matchesSearch = _searchQuery.isEmpty ||
           book.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-              book.author.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-              book.isbn.contains(_searchQuery);
+          book.author.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          book.isbn.contains(_searchQuery);
 
       final matchesCategory =
           _selectedCategory == 'All' || book.category == _selectedCategory;
@@ -53,12 +52,12 @@ class _SearchTabState extends State<SearchTab> {
       builder: (context) => BookDetailsSheet(
         book: book,
         isCheckedOut: widget.checkedOutBookIds.contains(book.id),
-        isFavorite: false, // إضافة هذه القيمة
+        isFavorite: false,
         onCheckout: () {
           Navigator.pop(context);
           widget.onCheckout(book);
         },
-        onToggleFavorite: () {}, // إضافة هذه الدالة (يمكن تطويرها لاحقاً)
+        onToggleFavorite: () {},
       ),
     );
   }
@@ -123,9 +122,9 @@ class _SearchTabState extends State<SearchTab> {
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () => setState(() => _searchQuery = ''),
-                          )
+                      icon: const Icon(Icons.clear),
+                      onPressed: () => setState(() => _searchQuery = ''),
+                    )
                         : null,
                   ),
                 ),
@@ -158,58 +157,58 @@ class _SearchTabState extends State<SearchTab> {
           Expanded(
             child: _filteredBooks.isEmpty
                 ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search_off,
-                          size: 64,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.3),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No books found',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withOpacity(0.6),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _searchQuery = '';
-                              _selectedCategory = 'All';
-                            });
-                          },
-                          child: const Text('Clear filters'),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _filteredBooks.length,
-                    itemBuilder: (context, index) {
-                      final book = _filteredBooks[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: MobileBookCard(
-                          book: book,
-                          isCheckedOut:
-                              widget.checkedOutBookIds.contains(book.id),
-                          isFavorite: false, // إضافة هذه القيمة
-                          onTap: () => _showBookDetails(book),
-                        ),
-                      );
-                    },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.search_off,
+                    size: 64,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.3),
                   ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No books found',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.6),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _searchQuery = '';
+                        _selectedCategory = 'All';
+                      });
+                    },
+                    child: const Text('Clear filters'),
+                  ),
+                ],
+              ),
+            )
+                : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: _filteredBooks.length,
+              itemBuilder: (context, index) {
+                final book = _filteredBooks[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: MobileBookCard(
+                    book: book,
+                    isCheckedOut:
+                    widget.checkedOutBookIds.contains(book.id),
+                    isFavorite: false,
+                    onTap: () => _showBookDetails(book),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-
 import '../data/mock_data.dart';
 import '../models/book.dart';
 import '../widgets/book_details_sheet.dart';
@@ -48,7 +47,7 @@ class HomeTab extends StatelessWidget {
     final userCategories = <String>{};
     for (final bookId in [...checkedOutBookIds, ...favoriteBookIds]) {
       final book =
-          books.firstWhere((b) => b.id == bookId, orElse: () => books.first);
+      books.firstWhere((b) => b.id == bookId, orElse: () => books.first);
       userCategories.add(book.category);
     }
 
@@ -98,6 +97,7 @@ class HomeTab extends StatelessWidget {
       ..sort((a, b) => b.publishYear.compareTo(a.publishYear));
     final recentAdditions = recentBooks.take(4).toList();
     final recommendedBooks = _getRecommendedBooks();
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: SafeArea(
@@ -111,7 +111,7 @@ class HomeTab extends StatelessWidget {
                 child: Row(
                   children: [
                     CircleAvatar(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor: colorScheme.primary,
                       child: Text(
                         MockData.mockUser.initials,
                         style: const TextStyle(color: Colors.white),
@@ -128,18 +128,15 @@ class HomeTab extends StatelessWidget {
                                 .textTheme
                                 .titleMedium
                                 ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           Text(
                             'What will you read today?',
                             style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withOpacity(0.6),
-                                    ),
+                            Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: colorScheme.onSurface.withOpacity(0.6),
+                            ),
                           ),
                         ],
                       ),
@@ -162,8 +159,8 @@ class HomeTab extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.primary.withBlue(200),
+                      colorScheme.primary,
+                      colorScheme.primary.withBlue(200),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -242,14 +239,14 @@ class HomeTab extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) => Padding(
+                      (context, index) => Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: MobileBookCard(
                       book: featuredBooks[index],
                       isCheckedOut:
-                          checkedOutBookIds.contains(featuredBooks[index].id),
+                      checkedOutBookIds.contains(featuredBooks[index].id),
                       isFavorite:
-                          favoriteBookIds.contains(featuredBooks[index].id),
+                      favoriteBookIds.contains(featuredBooks[index].id),
                       onTap: () =>
                           _showBookDetails(context, featuredBooks[index]),
                     ),
@@ -284,14 +281,14 @@ class HomeTab extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
-                    (context, index) => Padding(
+                        (context, index) => Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: MobileBookCard(
                         book: popularBooks[index],
                         isCheckedOut:
-                            checkedOutBookIds.contains(popularBooks[index].id),
+                        checkedOutBookIds.contains(popularBooks[index].id),
                         isFavorite:
-                            favoriteBookIds.contains(popularBooks[index].id),
+                        favoriteBookIds.contains(popularBooks[index].id),
                         onTap: () =>
                             _showBookDetails(context, popularBooks[index]),
                       ),
@@ -326,14 +323,14 @@ class HomeTab extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) => Padding(
+                      (context, index) => Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: MobileBookCard(
                       book: recommendedBooks[index],
                       isCheckedOut: checkedOutBookIds
                           .contains(recommendedBooks[index].id),
                       isFavorite:
-                          favoriteBookIds.contains(recommendedBooks[index].id),
+                      favoriteBookIds.contains(recommendedBooks[index].id),
                       onTap: () =>
                           _showBookDetails(context, recommendedBooks[index]),
                     ),
@@ -367,14 +364,14 @@ class HomeTab extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) => Padding(
+                      (context, index) => Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: MobileBookCard(
                       book: recentAdditions[index],
                       isCheckedOut:
-                          checkedOutBookIds.contains(recentAdditions[index].id),
+                      checkedOutBookIds.contains(recentAdditions[index].id),
                       isFavorite:
-                          favoriteBookIds.contains(recentAdditions[index].id),
+                      favoriteBookIds.contains(recentAdditions[index].id),
                       onTap: () =>
                           _showBookDetails(context, recentAdditions[index]),
                     ),

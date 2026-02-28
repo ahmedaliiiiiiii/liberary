@@ -1,10 +1,11 @@
+// lib/screens/main_screen.dart
+import 'package:city_library/screens/profile_tab.dart';
 import 'package:flutter/material.dart';
-
 import '../data/mock_data.dart';
 import '../models/book.dart';
 import 'home_tab.dart';
 import 'my_books_tab.dart';
-import 'profile_tab.dart';
+// تأكد أن هذا السطر موجود
 import 'search_tab.dart';
 
 class MainScreen extends StatefulWidget {
@@ -25,18 +26,16 @@ class _MainScreenState extends State<MainScreen> {
 
   void _checkoutBook(Book book) {
     setState(() {
-      book.availableCopies--;
-      _checkedOutBookIds.add(book.id);
+      if (book.availableCopies > 0) {
+        book.availableCopies--;
+        _checkedOutBookIds.add(book.id);
+      }
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Checked out "${book.title}"'),
         behavior: SnackBarBehavior.floating,
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {},
-        ),
       ),
     );
   }
@@ -64,19 +63,6 @@ class _MainScreenState extends State<MainScreen> {
         _favoriteBookIds.add(bookId);
       }
     });
-
-    final book = _books.firstWhere((b) => b.id == bookId);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          _favoriteBookIds.contains(bookId)
-              ? 'Added "${book.title}" to favorites'
-              : 'Removed "${book.title}" from favorites',
-        ),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
-      ),
-    );
   }
 
   @override
@@ -98,7 +84,7 @@ class _MainScreenState extends State<MainScreen> {
         checkedOutBooks: _checkedOutBooks,
         onReturn: _returnBook,
       ),
-      ProfileTab(
+      ProfileTab(    // هذا السطر سيعمل الآن
         user: MockData.mockUser,
         checkedOutCount: _checkedOutBookIds.length,
       ),
@@ -109,53 +95,31 @@ class _MainScreenState extends State<MainScreen> {
         index: _currentIndex,
         children: screens,
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: Colors.grey.shade200,
-              width: 1,
-            ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Home',
           ),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (index) => setState(() => _currentIndex = index),
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Theme.of(context).colorScheme.primary,
-          unselectedItemColor: Colors.grey.shade600,
-          items: [
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: _checkedOutBookIds.isNotEmpty
-                  ? Badge(
-                      label: Text('${_checkedOutBookIds.length}'),
-                      child: const Icon(Icons.book_outlined),
-                    )
-                  : const Icon(Icons.book_outlined),
-              activeIcon: _checkedOutBookIds.isNotEmpty
-                  ? Badge(
-                      label: Text('${_checkedOutBookIds.length}'),
-                      child: const Icon(Icons.book),
-                    )
-                  : const Icon(Icons.book),
-              label: 'My Books',
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book_outlined),
+            activeIcon: Icon(Icons.book),
+            label: 'My Books',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }
